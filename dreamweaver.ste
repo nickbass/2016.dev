@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<site>
+<localinfo sitename="2016.dev" ftporrdsserver="FALSE" localroot="C:%5CUsers%5CDanielle%5CDocuments%5CWebsites%5C2016.dev%5C" assetfolder="C:%5CUsers%5CDanielle%5CDocuments%5CWebsites%5C2016.dev%5CjQueryAssets" imagefolder="" spacerfilepath="" refreshlocal="TRUE" autouploadfiles="FALSE" maintainsyncinfo="TRUE" rewritedocrellinks="FALSE" cache="TRUE" httpaddress="http://2016.dev/" relativeTo="DOCUMENT" caseSensitiveLinks="TRUE" curserver="webserver"/>
+<remoteinfo  accesstype="lan" remoteroot="C:/Users/Danielle/Documents/Websites/2016.dev/" refreshremote="FALSE" checkoutname="" emailaddress="" enablecheckin="FALSE" checkoutwhenopen="TRUE"/>
+<designnotes usedesignnotes="TRUE" sharedesignnotes="FALSE"/>
+<sitemap homepage="" pagesperrow="200" columnwidth="125" showdependentfiles="FALSE" showpagetitles="FALSE" showhiddenfiles="FALSE"/>
+<appserverinfo servermodel="PHP MySQL" urlprefix="http://2016.dev/" connectionsmigrated="FALSE" serverobjectsversion="1" defaultdoctype="HTML" accesstype="lan" remoteroot="C:/Users/Danielle/Documents/Websites/2016.dev/" refreshremote="FALSE" testsvrbinaccesstype="none"/>
+<cloaking enabled="TRUE" patterns="FALSE">
+        <cloakedfolder folder="dw_php_codehinting.config"/>
+        <cloakedpattern pattern=".fla"/>
+        <cloakedpattern pattern=".psd"/>
+</cloaking>
+<contributorintegration enabled="FALSE"/>
+</site>
