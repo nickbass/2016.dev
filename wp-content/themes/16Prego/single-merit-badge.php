@@ -12,6 +12,12 @@ get_header(); ?>
 <div id="primary" class="content-area">
 	<main id="main" class="site-main" role="main">
 		<?php 
+            //displays date earned, creates variable then displays variable 
+            $date_earned = date('d F Y', strtotime(get_post_meta(get_the_ID(),'wpcf-earned-date', true)));
+            echo 'Date Earned: ' . $date_earned . '<br>' ;  
+            ?>
+        <?php
+            //displays location earned
             $badge_earned = get_post_meta( get_the_ID(), 'Earned', true);
             echo $badge_earned ;
         ?>
