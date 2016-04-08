@@ -24,7 +24,7 @@ if ( !defined( 'CHLD_THM_CFG_PLUGINS_VERSION' ) ):
 <ul>
 <li><h3><?php _e( 'Customize Plugin Stylesheets', 'child-theme-configurator' ); ?></h3>
 <p><?php _e( 'Apply the power of CTC\'s top-rated interface to your site\'s plugin styles. All new design makes it much easier to get the results you want.', 'child-theme-configurator' ); ?></p></li>
-<li><h3><?php _e( 'Quick Preview', 'child-theme-configurator' ); ?></h3><p><?php _e( 'Test your child theme with a single click.', 'child-theme-configurator' ); ?></p></li>
+<li><h3><?php _e( 'Quick Preview', 'child-theme-configurator' ); ?></h3><p><?php _e( 'Preview your child theme with a single click.', 'child-theme-configurator' ); ?></p></li>
 <li><h3><?php _e( 'Color Palettes', 'child-theme-configurator' ); ?></h3><p><?php _e( 'Keep the colors you select just a click away. No more searching for hex codes and RGB values.', 'child-theme-configurator' ); ?></p></li>
 <li><h3><?php _e( 'Find related styles', 'child-theme-configurator' ); ?></h3><p><?php _e( 'Use the "All Styles" panel to edit groups of selectors from a single combined list.', 'child-theme-configurator' ); ?></p></li>
 <li><h3><?php _e( 'Find styles by Nav Menu', 'child-theme-configurator' ); ?></h3><p><?php _e( 'Tweak menus quickly and easily.', 'child-theme-configurator' ); ?></p></li>

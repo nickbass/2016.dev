@@ -2,6 +2,9 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit;
 
+error_reporting( E_ALL );
+ini_set( 'display_errors', 1 );
+
     class ChildThemeConfiguratorPreview {
         /**
          * Replaces core function to start preview theme output buffer.
@@ -36,6 +39,11 @@ if ( !defined( 'ABSPATH' ) ) exit;
             // swap out theme mods with preview theme mods
             add_filter( 'pre_option_theme_mods_' . get_option( 'stylesheet' ), 
                 'ChildThemeConfiguratorPreview::preview_mods' );
+            // impossibly high priority to test for stylesheets loaded after wp_head()
+            add_action( 'wp_print_styles', 'ChildThemeConfiguratorPreview::test_css', 999999 );
+            // pass the wp_styles queue back to use for stylesheet handle verification
+            add_action( 'wp_footer', 'ChildThemeConfiguratorPreview::parse_stylesheet' );
+
         }
         
         /**
@@ -63,10 +71,74 @@ if ( !defined( 'ABSPATH' ) ) exit;
         static function preview_theme_stylesheet_filter() {
             return ( isset( $_GET['stylesheet'] ) && current_user_can( 'switch_themes' ) ) ? $_GET['stylesheet'] : '';
         }
+        
+        // enqueue dummy stylesheet with extremely high priority to test wp_head()
+        static function test_css() {
+            wp_enqueue_style( 'ctc-test', get_stylesheet_directory_uri() . '/ctc-test.css' );
+        }
+        
+        static function parse_stylesheet() {
+            echo '<script>/*<![CDATA[' . LF;
+            global $wp_styles, $wp_filter;
+            $queue = implode( "\n", $wp_styles->queue );
+            echo 'BEGIN WP QUEUE' . LF . $queue . LF . 'END WP QUEUE' . LF;
+            if ( is_child_theme() ):
+                // check for signals that indicate specific settings
+                $file = get_stylesheet_directory() . '/style.css';
+                if ( file_exists( $file ) && ( $styles = @file_get_contents( $file ) ) ):
+                    // is this child theme a standalone ( framework ) theme?
+                    if ( defined( 'CHLD_THM_CFG_IGNORE_PARENT' ) ):
+                        echo 'CHLD_THM_CFG_IGNORE_PARENT' . LF;
+                    endif;
+                    // has this child theme been configured by CTC? ( If it has the timestamp, it is one of ours. )
+                    if ( preg_match( '#\nUpdated: \d\d\d\d\-\d\d\-\d\d \d\d:\d\d:\d\d\n#s', $styles ) ):
+                        echo 'IS_CTC_THEME' . LF;
+                    endif;
+                    // is this child theme using the @import method?
+                    if ( preg_match( '#\@import\s+url\(.+?\/' . preg_quote( get_template() ) . '\/style\.css.*?\);#s', $styles ) ):
+                        echo 'HAS_CTC_IMPORT' . LF;
+                    endif;
+                endif;
+            else:
+                // Check if the parent style.css file is used at all. If not we can skip the parent stylesheet handling altogether.
+                $file = get_template_directory() . '/style.css';
+                if ( file_exists( $file ) && ( $styles = @file_get_contents( $file ) ) ):
+                    $styles = preg_replace( '#\/\*.*?\*\/#s', '', $styles );
+                    if ( !preg_match( '#\n\s*([\[\.\#\:\w][\w\-\s\(\)\[\]\'\^\*\.\#\+:,"=>]+?)\s*\{(.*?)\}#s', $styles ) ):
+                        echo 'NO_CTC_STYLES' . LF;
+                    endif;
+                endif;
+            endif;
+            /**
+             * Use the filter api to determine the parent stylesheet enqueue priority
+             * because some themes do not use the standard 10 for various reasons.
+             * We need to match this priority so that the stylesheets load in the correct order.
+             */
+            echo 'BEGIN CTC IRREGULAR' . LF;
+            // Iterate through all the added hook priorities
+            foreach ( $wp_filter[ 'wp_enqueue_scripts' ] as $priority => $arr ):
+                // If this is a non-standard priority hook, determine which handles are being enqueued.
+                // These will then be compared to the primary handle ( style.css ) 
+                // to determine the enqueue priority to use for the parent stylesheet. 
+                if ( $priority != 10 ):
+                    // iterate through each hook in this priority group
+                    foreach ( $arr as $funcarr ):
+                        // clear the queue
+                        $wp_styles->queue = array();
+                        // now call the hooked function to populate the queue
+                        if ( !is_null($funcarr['function']) )
+                            call_user_func_array( $funcarr[ 'function' ], array() );
+                    endforeach;
+                    // report the priority, and any handles that were added
+                    echo $priority . ',' . implode( ",", $wp_styles->queue ) . LF;
+                endif;
+            endforeach;
+            echo 'END CTC IRREGULAR' . LF;
+            echo '*/]]></script>' . LF;
+        }
     }
     
     // replace core preview function with CTCP function for quick preview
     remove_action( 'setup_theme', 'preview_theme' );
     add_action( 'setup_theme', 'ChildThemeConfiguratorPreview::preview_theme' );
-
-   
+    

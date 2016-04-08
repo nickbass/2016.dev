@@ -19,6 +19,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
             // setup ajax actions
             add_action( 'wp_ajax_ctc_update',       'ChildThemeConfigurator::save' );
             add_action( 'wp_ajax_ctc_query',        'ChildThemeConfigurator::query' );
+            add_action( 'wp_ajax_ctc_dismiss',      'ChildThemeConfigurator::dismiss' );
             // initialize languages
             add_action( 'init',                     'ChildThemeConfigurator::lang' );
         }
@@ -81,17 +82,20 @@ if ( !defined( 'ABSPATH' ) ) exit;
         static function version_notice() {
             deactivate_plugins( plugin_basename( __FILE__ ) );
             unset( $_GET[ 'activate' ] );
-            echo '<div class="update-nag"><p>' . 
+            echo '<div class="notice-warning"><p>' . 
                 sprintf( __( 'Child Theme Configurator requires WordPress version %s or later.', 'child-theme-configurator' ), 
                 CHLD_THM_CFG_MIN_WP_VERSION ) . '</p></div>' . LF;
         }
+        static function dismiss() {
+            self::ctc()->ajax_dismiss_notice();
+        }
     }
-    defined( 'LF' ) or define( 'LF',            "\n" );
     defined( 'LILAEAMEDIA_URL' ) or 
     define( 'LILAEAMEDIA_URL',                  "http://www.lilaeamedia.com" );
     defined( 'CHLD_THM_CFG_DOCS_URL' ) or 
     define( 'CHLD_THM_CFG_DOCS_URL',            "http://www.childthemeconfigurator.com" );
-    define( 'CHLD_THM_CFG_VERSION',             '1.7.9.1' );
+    define( 'CHLD_THM_CFG_VERSION',             '2.0.2' );
+    define( 'CHLD_THM_CFG_PREV_VERSION',        '1.7.9.1' );
     define( 'CHLD_THM_CFG_MIN_WP_VERSION',      '3.7' );
     defined( 'CHLD_THM_CFG_BPSEL' ) or 
     define( 'CHLD_THM_CFG_BPSEL',               '2500' );

@@ -1,14 +1,14 @@
 === Child Theme Configurator ===
 Contributors: lilaeamedia
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8QE5YJ8WE96AJ
-Tags: child theme, child themes, custom styles, customize styles, customize theme, CSS, responsive, css editor, child theme generator, child theme creator, style, stylesheet, customizer
+Tags: child theme, child themes, custom styles, customize styles, customize theme, CSS, responsive, css editor, child theme generator, child theme creator, style, stylesheet, customizer, childtheme, childthemes
 Requires at least: 3.9
-Tested up to: 4.4
-Stable tag: 1.7.9.1
+Tested up to: 4.5
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create child themes and customize styles, templates and functions. Enqueues stylesheets and web fonts. Handles rgba, vendor-prefixes and more.
+When using the Customizer is not enough - Create child themes and customize styles, templates, functions and more.
 
 == Description ==
 
@@ -16,33 +16,46 @@ Child Theme Configurator is a fast and easy to use CSS editor that allows you to
 
 = Take Control of Your Child Themes =
 
-https://www.youtube.com/watch?v=NQ1M-ZlRScY
-
 The Child Theme Configurator parses and indexes your stylesheets so that every CSS media query, selector, property and value are at your fingertips. Second, it shows you how each customization you make will look before you commit it to the child theme. Finally, it saves your work so that you can customize styles in your child themes without the risk of losing your edits. 
 
 You can create any number of child themes from your existing Parent Themes. The Child Theme Configurator lets you choose from your installed themes (even existing child themes) and save the results in your Themes directory.
 
 When you are ready, just activate the Child Theme and your WordPress site takes on the custom styles automatically.
 
+https://www.youtube.com/watch?v=xL0YmieF6d0
+
 = Why create child themes and customize styles using the Child Theme Configurator? =
 
-* Update themes without losing customizations
-* Enqueue (link) stylesheets instead of using @import
-* Customize @media queries for responsive design
-* Copy existing widgets, menus and other options to child theme
-* Select hex, RGBA (transparent) and named colors using Spectrum color picker
-* Add fallback styles (multiple values per property)
-* Resolve common child theme issues with almost any parent theme
-* Save hours of development time
-* Multisite compatible
-* Make modifications unavailable to the Customizer
-* Export child themes as Zip Archive
-* Use web fonts in your child theme
-* Identify and override exact selectors from the parent theme
-* Change specific colors, backgrounds, font styles, etc., without changing other elements
-* Automatically generate cross-browser and vendor-prefixed properties and CSS gradients
-* Preview custom styles before committing to them
-* Uses WP Filesystem API – will not create files you cannot remove
+1. Some things cannot be changed using the Customizer.
+
+2. Unless you use a child theme, you will lose any changes you made to templates and stylesheets when you update.
+
+3. Child Theme Configurator automatically determines the correct way to set up a child theme based on the theme you are using.
+
+4. You can find the exact style selectors your theme uses and change properties quickly.
+
+5. You can locate, copy and edit theme templates from the admin.
+
+6. Much more:
+  * Update themes without losing customizations
+  * Smart Theme Analyzer determines correct settings to use
+  * Resolve common child theme issues with almost any parent theme
+  * Copy existing widgets, menus and Customizer options to child theme
+  * Use web fonts in your child theme
+  * Enqueue (link) stylesheets instead of using @import
+  * Quickly locate and edit theme CSS.
+  * Customize @media queries for responsive design
+  * Select hex, RGBA (transparent) and named colors using Spectrum color picker
+  * Add fallback styles (multiple values per property)
+  * Save hours of development time
+  * Multisite compatible
+  * Make modifications unavailable to the Customizer
+  * Export child themes as Zip Archive
+  * Identify and override exact selectors from the parent theme
+  * Change specific colors, backgrounds, font styles, etc., without changing other elements
+  * Automatically generate cross-browser and vendor-prefixed properties and CSS gradients
+  * Preview custom styles before committing to them
+  * Uses WP Filesystem API – will not create files you cannot remove
 
 = Child Theme Configurator PRO =
 
@@ -85,36 +98,34 @@ Learn more at http://www.lilaeamedia.com/plugins/intelliwidget-responsive-menu
 
 4. Navigate to Tools > Child Themes (multisite users go to Network Admin > Themes > Child Themes).
    
-= 10 Easy Steps to Create a Child Theme =
+= The Parent/Child Tab: 10 Easy Steps to Create a Child Theme =
 
-1. Select the theme you want to configure from the "Parent Theme" menu.
+1. Select an action:
+  * CREATE a new Child Theme - Install a new customizable child theme using an installed theme as a parent.
+  * CONFIGURE an existing Child Theme - Set up a previously installed child theme for use with the Configurator or to modify current settings.
+  * DUPLICATE an existing Child Theme - Make a complete copy of an existing Child Theme in a new directory, including any menus, widgets and other Customizer settings. The option to copy the Parent Theme settings (step 8, below) is disabled with this action.
+  * RESET an existing Child Theme (this will destroy any work you have done in the Configurator) - Revert the Child theme stylesheet and functions files to their state before the initial configuration or last reset.
 
-2. Select "new" or "existing".
+2. Select a Parent Theme if creating a new Child Theme; select a Child Theme if configuring, duplicating or resetting.
 
-3. Optional: Enter a Name, Theme Website, Author, Author Website, Description, Tags and Version for the child theme.
+3. Analyze Child Theme - Click "Analyze" to determine stylesheet dependencies and other potential issues.
 
-4. Optional: Copy Parent Theme Menus, Widgets and other Options. NOTE: This will overwrite any child theme options you may have already set.
+4. If creating a new Child Theme, name the new theme directory; otherwise verify it the directory is correct. - This is NOT the name of the Child Theme. You can customize the name, description, etc. in step 7, below.
 
-5. Choose stylesheet handling:
-  * **None (handled by theme)**
-Select this option if all stylesheets are correctly enqueued for child themes. If you find that custom styles are not being applied correctly, use a different option.
-  * **Enqueue parent stylesheet (default)**
-    Select this option if the theme enqueues the active stylesheet but has no special handling for child themes. Start with this option if unsure.
-  * **Enqueue child stylesheet**
-    Select this option if the theme enqueues the parent theme stylesheet but does not enqueue the child theme stylesheet at all. This can happen if get_template() or get_template_directory_uri() is used to link the stylesheet.
-  * **Enqueue both parent and child stylesheets**
-    Select this option if stylesheet link tags are hard-coded into the header template (common in older themes). This enables the child theme stylesheet to override the parent theme stylesheet without using @import. 
-  * **@import parent stylesheet**
-    This option imports the parent theme stylesheet from the child theme stylesheet. This enables the child theme stylesheet to override the parent theme stylesheet, but using @import is no longer recommended.   
-  * [See our website for more information about which option to use](http://www.childthemeconfigurator.com/how-to-use/#stylesheet_handling) 
+5. Select where to save new styles:
+  * Primary Stylesheet (style.css) - Save new custom styles directly to the Child Theme primary stylesheet, replacing the existing values. The primary stylesheet will load in the order set by the theme.
+  * Separate Stylesheet - Save new custom styles to a separate stylesheet and use any existing child theme styles as a baseline. Select this option if you want to preserve the original child theme styles instead of overwriting them. This option also allows you to customize stylesheets that load after the primary stylesheet.
 
-6. Optional: Save Backup
+6. Select Parent Theme stylesheet handling:
+  * Use the WordPress style queue. - Let the Configurator determine the appropriate actions and dependencies and update the functions file automatically.
+  * Use @import in the child theme stylesheet. - Only use this option if the parent stylesheet cannot be loaded using the WordPress style queue. Using @import is not recommended.
+  * Do not add any parent stylesheet handling. - Select this option if this theme already handles the parent theme stylesheet or if the parent theme's style.css file is not used for its appearance.
 
-7. Optional: Reset/Restore from backup.
+7. Customize the Child Theme Name, Description, Author, Version, etc.: (Click to toggle form)
 
-8. Optional: Choose additional stylesheets. Stylesheets that are currently used by the parent theme are automatically selected.
+8. Copy Parent Theme Menus, Widgets and other Customizer Settings to Child Theme: - NOTE: This will overwrite any child theme options you may have already set.
 
-9. Click "Generate/Rebuild Child Theme Files."
+9. Click the button to run the Configurator.
 
 10. IMPORTANT: Always test child themes with Live Preview (theme customizer) before activating!
 
@@ -122,7 +133,7 @@ Select this option if all stylesheets are correctly enqueued for child themes. I
 
 = Is there a tutorial? =
 
-https://www.youtube.com/watch?v=NQ1M-ZlRScY
+There are videos under the "Help" tab at the top right of the page. You can also view them at http://www.childthemeconfigurator.com/tutorial-videos
 
 = If the parent theme changes (e.g., upgrade), do I have to update the child theme? = 
 
@@ -238,7 +249,7 @@ You can add queries and selectors using the "Raw CSS" textarea on the Query/Sele
 
 = How do I remove a style from the Parent Theme? = 
 
-You shouldn't really "remove" a style from the Parent. You can, however, set the property to "inherit," "none," or zero (depending on the property). This will negate the Parent value. Some experimentation may be necessary.
+You shouldn't really "remove" a style from the Parent. You can, however, set the property to "inherit," "none," or zero (depending on the property). This will negate the Original value. Some experimentation may be necessary.
 
 = How do I remove a style from the Child Theme? = 
 
@@ -276,6 +287,29 @@ https://www.youtube.com/watch?v=iBiiAgsK4G4
 7. Files tab
 
 == Changelog ==
+
+= 2.0.2 =
+* Automatically set priority of enqueue hook based on value from parent theme
+* Made file scan routine more efficient
+* Support for background-image as base64 data
+* Tweaked analyzer signals 
+
+= 2.0.1 =
+* Updated language template and de_DE files
+* Fix: case where child stylesheet link was not being added resulting in "This child theme does not load a Configurator stylesheet" notice
+* Fix: fatal error in debug mode
+* Minor bug fixes
+
+= 2.0.0 =
+* New Theme Analyzer automatically checks for issues and determines correct settings
+* Step by step setup of Parent/Child settings
+* Simplified parent stylesheet handling options
+* Option to write new child theme styles to a separate stylesheet
+* Uses WordPress style dependencies to ensure correct child theme stylesheet load order
+* Automatically repairs themes that use outdated stylesheet handling methods
+* Parses parent theme files and only displays templates that can be be overridden by child themes
+* Numerous minor bug fixes 
+
 = 1.7.9.1 =
 * Fix: regression bug in 1.7.9 causing new property menu to fail
 
@@ -553,25 +587,22 @@ https://www.youtube.com/watch?v=iBiiAgsK4G4
 * Initial release.
 
 == Upgrade Notice ==
-1.7.9.1 Fixed regression bug in 1.7.9 causing new property menu to fail. 
-1.7.9 Fix to autopopulate default additional stylesheets. Changes to make Child Theme Configurator more lightweight on the front-end. 
+2.0 is a major version release and some updates to your child themes may be required. Please watch the videos to learn about the new features.  
+ 
+== Query/Selector Tab ==
 
-== Override Parent Styles ==
-
-There are two ways to identify and customize parent styles. The Child Theme Configurator lets you search styles by CSS selector and by property. If you wish to customize a specific CSS selector (e.g., h1), use the "Query/Selector" tab. If you have a specific CSS value you wish to customize site-wide (e.g., the color of the type), use the "Property/Value" tab.
-
-= Query/Selector Tab =
+There are two ways to identify and customize baseline (parent) styles. The Child Theme Configurator lets you search styles by CSS selector and by property. If you wish to customize a specific CSS selector (e.g., h1), use the "Query/Selector" tab. If you have a specific CSS value you wish to customize site-wide (e.g., the color of the type), use the "Property/Value" tab.
 
 The Query/Selector tab lets you find specific CSS selectors and edit them. First, find the query that contains the CSS selector you wish to edit by typing in the Query autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys. CSS selectors are in the base query by default.
 Next, find the CSS selector by typing in the "Selector" autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys.
 
-This will load all of the properties for that CSS selector with the Parent values on the left and the child theme values inputs on the right. Any existing child theme values will be automatically populated. There is also a Sample preview that displays the combination of Parent and Child overrides. Note that the border and background-image get special treatment.
+This will load all of the properties for that CSS selector with the Original values on the left and the child theme values inputs on the right. Any existing child theme values will be automatically populated. There is also a Sample preview that displays the combination of Parent and Child overrides. Note that the border and background-image get special treatment.
 
 The "Order" field contains the original sequence of the CSS selector in the parent theme stylesheet. You can change the CSS selector order sequence by entering a lower or higher number in the "Order" field. You can also force style overrides (so called "!important" flag) by checking the "!" box next to each input. Please use judiciously.
 
 Click "Save" to update the child theme stylesheet and save your changes to the WordPress admin.
 
-== Adding New Styles ==
+== Adding Raw CSS ==
 
 If you wish to add additional properties to a given CSS selector, first load the selector using the Query/Selector tab. Then find the property you wish to override by typing in the New Property autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys. This will add a new input row to the selector inputs.
 
@@ -579,7 +610,7 @@ If you wish to add completely new CSS selectors, or even new @media queries, you
 
 If you prefer to use shorthand syntax for properties and values instead of the inputs provided by the Child Theme Configurator, you can enter them here as well. The parser will convert your input into normalized CSS code automatically.
 
-= Property/Value Tab =
+== Property/Value Tab ==
 
 The Property/Value tab lets you find specific values for a given property and then edit that value for individual CSS selectors that use that property/value combination. First, find the property you wish to override by typing in the Property autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys.
 
@@ -593,7 +624,7 @@ If you want to edit all of the properties for the CSS selector you can click the
 
 == Web Fonts Tab ==
 
-You can add additional stylesheets and web fonts by typing @import rules into the textarea on the Web Fonts tab. **Important: do not import the parent theme stylesheet here.** Use the &quot;Parent stylesheet handling&quot; option from the Parent/Child tab.
+You can add additional stylesheets and web fonts by typing @import rules into the textarea on the Web Fonts tab. **Important: do not import the parent theme stylesheet here.** Use the "Parent stylesheet handling" option from the Parent/Child tab.
 
 == Files Tab ==
 
@@ -636,11 +667,10 @@ Some themes (particularly commercial themes) do not correctly load parent templa
 == Caveats ==
 
 * Arbitrary comments are not supported. Providing a high level of flexibility for previewing and modifying custom styles requires a sophisticated parsing system. Maintaining comments that bound to any particular element in the stylesheet is prohibitively expensive compared to the value it would add. Although we are working to include this as an option in the future, currently all comments are stripped from the child theme stylesheet code.
-* Legacy gradient syntax is not supported. The Child Theme Configurator plugin does not support the MS filter gradient or legacy webkit gradient. These will continue to work if they are used in the parent theme, but will not be written to the child theme stylesheet. If there is a demand, we may add it in a future release, but most users should have upgraded by now.
+* No @keyframes or @font-face rules. The Child Theme Configurator plugin only supports @media and @import. If you need other @rules, put them in a separate stylesheet and import them into the Child Theme stylesheet.
 * Only two-color gradients. The Child Theme Configurator plugin is powerful, but we have simplified the gradient interface. You can use any gradient you want as long as it has two colors and no intermediate stops.
-* No @font-face rules. The Child Theme Configurator plugin only supports @media and @import. If you need other @rules, put them in a separate stylesheet and import them into the Child Theme stylesheet.
-* Not all CSS properties are customizable. The Child Theme Configurator plugin works with the vast majority of vendor-specific properties, however we’ve left out some of the more obscure options. As with legacy gradients, they will work, but will not be automatically enhanced by the Configurator.
-* CSS properties are auto-discovered. The Child Theme Configurator plugin loads the properties that exist in the Parent stylesheet. You can always add new rules using the “Raw CSS” text area.
+* CSS properties are auto-discovered. The Child Theme Configurator plugin loads the properties that exist in the Parent stylesheet. You can always add new properties using the “Raw CSS” text area.
+* Legacy gradient syntax is not supported. The Child Theme Configurator plugin does not support the MS filter gradient or legacy webkit gradient. These will continue to work if they are used in the parent theme, but will not be written to the child theme stylesheet. If there is a demand, we may add it in a future release, but most users should have upgraded by now.
 
 == Documentation ==
 
@@ -648,4 +678,4 @@ Go to http://www.childthemeconfigurator.com/
 
 Serbo-Croatian translation courtesy of Borisa Djuraskovic borisad@webhostinghub.com http://www.webhostinghub.com
 
-Copyright: (C) 2014-2015 Lilaea Media
+Copyright: (C) 2014-2016 Lilaea Media

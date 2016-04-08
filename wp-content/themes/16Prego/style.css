@@ -7,4 +7,6 @@ Updated: 2016-03-04 20:40:38
 */
 
 @charset "UTF-8";
-
+/* Custom Styles*/
+.one-badge{list-style: none;
+}

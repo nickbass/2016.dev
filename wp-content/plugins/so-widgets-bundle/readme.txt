@@ -2,8 +2,8 @@
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 3.9
 Tested up to: 4.4.2
-Stable tag: 1.5.8
-Build time: 2016-03-05T10:52:59+02:00
+Stable tag: 1.5.9
+Build time: 2016-04-06T08:37:03+02:00
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
 
@@ -50,6 +50,17 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.5.10 - April 5 2016 =
+* Added Icon widget.
+* Moved widget form arrays into separate functions to improve performance.
+* Cache widget style CSS if it can't be saved to filesystem.
+* Improved preview checking so preview style CSS isn't stored.
+* Contact Form: Improved instance hashing for compatibility with Yoast SEO.
+* Contact Form: Added description field and customisation.
+* Slider: Ensure correct styles are applied to slider images when a link is defined.
+* Features: Allow user to select size for uploaded icon image.
+* Price Table: Ensure feature icons always vertically centered, alongside feature text.
 
 = 1.5.9 - February 26 2016 =
 * Contact Form: Fixed hash checking for duplicate emails.

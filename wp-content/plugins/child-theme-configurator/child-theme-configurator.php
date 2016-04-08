@@ -5,15 +5,16 @@ if ( !defined( 'ABSPATH' ) ) exit;
 /*
     Plugin Name: Child Theme Configurator
     Plugin URI: http://www.childthemeconfigurator.com
-    Description: Create child themes and customize styles, templates and functions. Enqueues stylesheets and web fonts. Handles rgba, vendor-prefixes and more.
-    Version: 1.7.9.1
+    Description: When using the Customizer is not enough - Create child themes and customize styles, templates, functions and more.
+    Version: 2.0.2
     Author: Lilaea Media
     Author URI: http://www.lilaeamedia.com
     Text Domain: chld_thm_cfg
     Domain Path: /lang
     License: GPLv2
-    Copyright (C) 2014-2015 Lilaea Media
+    Copyright (C) 2014-2016 Lilaea Media
 */
+    defined( 'LF' ) or define( 'LF',            "\n" );
 
     defined( 'CHLD_THM_CFG_DIR' ) or 
     define( 'CHLD_THM_CFG_DIR',                 dirname( __FILE__ ) );
@@ -28,11 +29,12 @@ if ( !defined( 'ABSPATH' ) ) exit;
     if ( isset( $_GET['preview_ctc'] ) )
         include_once( dirname( __FILE__ ) . '/includes/class-ctc-preview.php' );
         
-    add_filter( 'style_loader_src', 'chld_thm_cfg_plugins_version', 10, 2 );
+    add_filter( 'style_loader_src', 'chld_thm_cfg_version', 10, 2 );
     
-    function chld_thm_cfg_plugins_version( $src, $handle ) {
-        if ( strstr( $src, get_stylesheet() ) )
+    function chld_thm_cfg_version( $src, $handle ) {
+        if ( strstr( $src, get_stylesheet() ) ):
             $src = preg_replace( "/ver=(.*?)(\&|$)/", 'ver=' . wp_get_theme()->Version . "$2", $src );
+        endif;
         return $src;
     }
 

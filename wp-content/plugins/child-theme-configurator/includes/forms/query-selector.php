@@ -10,8 +10,8 @@ if ( !defined( 'ABSPATH' ) ) exit;
     <?php wp_nonce_field( apply_filters( 'chld_thm_cfg_action', 'ctc_update' ) ); ?>
     <div class="ctc-input-row clearfix" id="input_row_query">
       <div class="ctc-input-cell"> <strong>
-        <?php _e( 'Query', 'child-theme-configurator' ); ?>
-        </strong> </div>
+        <?php _e( '@media Query', 'child-theme-configurator' ); ?>
+        </strong> <?php _e( '( or "base" )', 'child-theme-configurator' ); ?></div>
       <div class="ctc-input-cell" id="ctc_sel_ovrd_query_selected">&nbsp;</div>
       <div class="ctc-input-cell">
         <div class="ui-widget">
@@ -37,7 +37,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
           <?php _e( 'Sample', 'child-theme-configurator' ); ?>
           </strong></div>
         <div class="ctc-input-cell clearfix" style="max-height:150px;overflow:hidden">
-          <div class="ctc-swatch" id="ctc_child_all_0_swatch"><?php echo $this->ctc()->swatch_text; ?></div>
+          <div class="ctc-swatch" id="ctc_child_all_0_swatch"><?php echo $this->swatch_txt; ?></div>
         </div>
         <div id="ctc_status_sel_val"></div>
         <div class="ctc-input-cell ctc-button-cell" id="ctc_save_query_selector_cell">
@@ -53,7 +53,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
           <?php _e( 'Property', 'child-theme-configurator' ); ?>
           </strong> </div>
         <div class="ctc-input-cell"> <strong>
-          <?php _e( 'Parent Value', 'child-theme-configurator' ); ?>
+          <?php _e( 'Baseline Value', 'child-theme-configurator' ); ?>
           </strong> </div>
         <div class="ctc-input-cell"> <strong>
           <?php _e( 'Child Value', 'child-theme-configurator' ); ?>

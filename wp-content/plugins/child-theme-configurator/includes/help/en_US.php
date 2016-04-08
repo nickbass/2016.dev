@@ -3,62 +3,55 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // Help Content
 ?>
 <!-- BEGIN tab -->
-<h3 id="ctc_getting_started">Start Here</h3>
-<p><strong style="font-size:large">10 Easy Steps to Create a Child Theme:</strong></p>
-<ol>
-  <li><strong>Select the theme</strong> you want to configure from the &quot;Parent Theme&quot; menu.</li>
-  <li><strong>Select &quot;new&quot; or &quot;existing&quot;.</strong>
-    <ul>
-      <li>If there are currently no child themes available, the &quot;Child Theme&quot; and &quot;Child Theme Names&quot; will be entered for you automatically based on the parent theme selected. You may edit these if you like, but they cannot be the same as an existing theme.</li>
-      <li>If there are existing child themes available, there will be an additional menu labeled &quot;Use Existing Child Theme&quot; from which you can select, or enter a new value in the input box to create a new one.</li>
-    </ul>
-  </li>
-  <li><strong>Optional: Enter a Theme Name, Theme Website, Author, Author Website, Descriptiont, Tags and Version</strong> for the child theme. If using an existing child theme, they will be entered automatically  based on the child theme selected.</li>
-  <li><strong>Choose how WordPress should handle the parent theme stylesheet:</strong> 
-    <ul>
-      <li><strong>None (handled by theme)</strong>
-Select this option if all stylesheets are correctly enqueued for child themes. If you find that styles are not being applied correctly, use a different option.</li>
-      <li><strong>Enqueue parent stylesheet (default)</strong>
-Select this option if the theme enqueues the active stylesheet but has no special handling for child themes. Start with this option if unsure.</li>
-      <li><strong>Enqueue child stylesheet</strong>
-Select this option if the theme enqueues the parent stylesheet but does not enqueue the child stylesheet at all. This can happen if <code>get_template()</code> or <code>get_template_directory_uri()</code> is used to link the stylesheet.</li>
-      <li><strong>Enqueue both parent and child stylesheets</strong>
-Select this option if stylesheet link tags are hard-coded into the header template (common in older themes). This enables the child stylesheet to override the parent stylesheet without using <code>@import.</code></li>
-      <li><strong><code>@import</code> parent stylesheet</strong>
-This option imports the parent stylesheet from the child stylesheet. This enables the child stylesheet to override the parent stylesheet, but using <code>@import</code> is no longer recommended.</li>
-    </ul></li>
-  <li><strong>Use Parent Options (optional)</strong> If you want to maintain the same theme options as the parent theme, check "Copy Parent Theme Menus, Widgets and other Options". Depending on the theme, some options may need to be applied using separate theme option controls. <strong>NOTE: This will overwrite any child theme options you may have already set.</strong></li>
-  <li><strong>Save Backup (optional)</strong> If using an existing child theme, you can check "Backup Stylesheet", to create a backup of the child theme stylesheet in the child theme directory.</li>
-  <li><strong>Restore from backup (optional - new in version 1.6.0):</strong> If using an existing child theme, you can choose whether to reload the current child theme stylesheet (leave unchanged), reset all values, or restore it from a backup. If there are backup files available, they will appear as radio button options.</li>
-  <li><strong>Choose additional stylesheets</strong> If your theme uses additional stylesheets, you can open the &quot;Parse Additional Stylesheets&quot; toggle and they will appear as checkbox options. Stylesheets that are being used by the parent theme should be automatically selected for you. Only select additional stylesheets you wish to customize to reduce overhead. <strong>NOTE: If the parent theme uses Bootstrap stylesheets, they will not be automatically selected.</strong> You can select Bootstrap stylesheets manually if you need to customize them, but in most cases they add unecessary overhead to the configuration data.</li>
-  <li><strong>Click "Generate/Rebuild Child Theme Files."</strong></li>
-  <li><strong>IMPORTANT: <a target="_blank" href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>/how-to-use/#preview_activate" title="Test your child theme before activating!">Always test your child theme with Live Preview before activating!</a></strong></li>
+<h3 id="ctc_tutorial">Start Here: Tutorial Videos</h3>
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/xL0YmieF6d0?rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe></p>
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/vhQ5oi20rYE?rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe></p>
+<p>Many more videos are available. <a href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>/tutorial-videos" target="_blank">Click here to view videos.</a></p><!-- END tab --> 
+<!-- BEGIN tab -->
+<h3 id="ctc_getting_started">Parent/Child Tab</h3>
+<ol><li><strong>Select an action:</strong>
+  <ul><li><strong>CREATE a new Child Theme</strong> - Install a new customizable child theme using an installed theme as a parent.</li>
+  <li><strong>CONFIGURE an existing Child Theme</strong> - Set up a previously installed child theme for use with the Configurator or to modify current settings.</li>
+  <li><strong>DUPLICATE an existing Child Theme</strong> - Make a complete copy of an existing Child Theme in a new directory, including any menus, widgets and other Customizer settings. The option to copy the Parent Theme settings (step 8, below) is disabled with this action.</li>
+  <li><strong>RESET an existing Child Theme</strong> (this will destroy any work you have done in the Configurator) - Revert the Child theme stylesheet and functions files to their state before the initial configuration or last reset.</li></ul></li>
+<li><strong>Select a Parent Theme</strong> if creating a new Child Theme; select a Child Theme if configuring, duplicating or resetting.</li>
+<li><strong>Analyze Child Theme</strong> - Click "Analyze" to determine stylesheet dependencies and other potential issues.</li>
+<li><strong>Name the new theme directory</strong> if creating a new Child Theme; otherwise verify it the directory is correct. - This is NOT the name of the Child Theme. You can customize the name, description, etc. in step 7, below.</li>
+<li><strong>Select where to save new styles:</strong><ul>
+  <li><strong>Primary Stylesheet (style.css)</strong> - Save new custom styles directly to the Child Theme primary stylesheet, replacing the existing values. The primary stylesheet will load in the order set by the theme.</li>
+  <li><strong>Separate Stylesheet</strong> - Save new custom styles to a separate stylesheet and use any existing child theme styles as a baseline. Select this option if you want to preserve the original child theme styles instead of overwriting them. This option also allows you to customize stylesheets that load after the primary stylesheet.</li></ul></li>
+<li><strong>Select Parent Theme stylesheet handling:</strong><ul>
+  <li><strong>Use the WordPress style queue.</strong> - Let the Configurator determine the appropriate actions and dependencies and update the functions file automatically.</li>
+  <li><strong>Use @import</strong> in the child theme stylesheet. - Only use this option if the parent stylesheet cannot be loaded using the WordPress style queue. Using @import is not recommended.</li>
+  <li><strong>Do not add any parent stylesheet handling.</strong> - Select this option if this theme already handles the parent theme stylesheet or if the parent theme's style.css file is not used for its appearance.</li></ul></li>
+<li><strong>Customize the Child Theme Name, Description, Author, Version, etc.</strong></li>
+<li><strong>Copy Parent Theme Menus, Widgets and other Customizer Settings to Child Theme.</strong> - NOTE: This will overwrite any child theme options you may have already set.</li>
+<li><strong>Click the button</strong> to run the Configurator.</li>
+<li><strong>IMPORTANT: <a target="_blank" href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>/how-to-use/#preview_activate" title="Preview your child theme before activating!">Always test your child theme with Live Preview (theme customizer) before activating!</a></strong></li>
 </ol>
 <!-- END tab --> 
 <!-- BEGIN tab -->
-<h3 id="ctc_tutorial">Tutorial Videos</h3>
-<p>We are no longer embedding videos for performance reasons. <a href="http://www.childthemeconfigurator.com/tutorial-videos" target="_blank">Click here to view videos.</a></p><!-- END tab --> 
-<!-- BEGIN tab -->
 <h3 id="ctc_query_selector">Query/Selector Tab</h3>
-<p>There are two ways to identify and override parent styles. The Child Theme Configurator lets you search styles by <strong>selector</strong> and by <strong>property</strong>. If you wish to change a specific selector (e.g., h1), use the "Query/Selector" tab. If you have a specific value you wish to change site-wide (e.g., the color of the type), use the "Property/Value" tab.</p>
+<p>There are two ways to identify and override baseline (parent) styles. The Child Theme Configurator lets you search styles by <strong>selector</strong> and by <strong>property</strong>. If you wish to change a specific selector (e.g., h1), use the "Query/Selector" tab. If you have a specific value you wish to change site-wide (e.g., the color of the type), use the "Property/Value" tab.</p>
 <p>The Query/Selector tab lets you find specific selectors and edit them. First, find the query that contains the selector you wish to edit by typing in the <strong>Query</strong> autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys. Selectors are in the <strong>base</strong> query by default.</p>
 <p>Next, find the selector by typing in the <strong>Selector</strong> autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys.</p>
-<p>This will load all of the properties for that selector with the Parent values on the left and the Child values inputs on the right. Any existing child values will be automatically populated. There is also a Sample preview that displays the combination of Parent and Child overrides. Note that the <strong>border</strong> and <strong>background-image</strong> get special treatment.</p>
+<p>This will load all of the properties for that selector with the Original values on the left and the New values inputs on the right. Any existing new values will be automatically populated. There is also a Sample preview that displays the combination of Parent and Child overrides. Note that the <strong>border</strong> and <strong>background-image</strong> get special treatment.</p>
+<p>If you wish to add additional properties to an existing selector, first load the selector using the Query/Selector tab. Then find the property you wish to override by typing in the <strong>New Property</strong> autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys. This will add a new input row to the selector inputs.</p>
 <p>The "Order" field contains the original sequence of the selector in the parent theme stylesheet. You can change the selector order sequence by entering a lower or higher number in the "Order" field. You can also force style overrides (so called "!important" flag) by checking the "!" box next to each input. Please use judiciously.</p>
 <p>Click "Save" to update the child stylesheet and save your changes to the WordPress admin.</p>
 <!-- END tab --> 
 <!-- BEGIN tab -->
-<h3 id="ctc_new_styles">Adding New Styles</h3>
-<p>If you wish to add additional properties to a given selector, first load the selector using the Query/Selector tab. Then find the property you wish to override by typing in the <strong>New Property</strong> autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys. This will add a new input row to the selector inputs.</p>
+<h3 id="ctc_new_styles">Adding Raw CSS</h3>
 <p>If you wish to add completely new selectors, or even new @media queries, you can enter free-form CSS in the "Raw CSS" textarea. Be aware that your syntax must be correct (i.e., balanced curly braces, etc.) for the parser to load the new styles. You will know it is invalid because a red "X" will appear next to the save button.</p>
 <p>If you prefer to use shorthand syntax for properties and values instead of the inputs provided by the Child Theme Configurator, you can enter them here as well. The parser will convert your input into normalized CSS code automatically.</p>
+<p>If you wish to add additional properties to an existing selector, first load the selector using the Query/Selector tab. Then find the property you wish to override by typing in the <strong>New Property</strong> autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys. This will add a new input row to the selector inputs.</p>
 <!-- END tab --> 
 <!-- BEGIN tab -->
 <h3 id="ctc_property_value">Property/Value Tab</h3>
-<p>There are two ways to identify and override parent styles. The Child Theme Configurator lets you search styles by <strong>selector</strong> and by <strong>property</strong>. If you wish to change a specific selector (e.g., h1), use the "Query/Selector" tab. If you have a specific value you wish to change site-wide (e.g., the color of the type), use the "Property/Value" tab.</p>
+<p>There are two ways to identify and override baseline (parent) styles. The Child Theme Configurator lets you search styles by <strong>selector</strong> and by <strong>property</strong>. If you wish to change a specific selector (e.g., h1), use the "Query/Selector" tab. If you have a specific value you wish to change site-wide (e.g., the color of the type), use the "Property/Value" tab.</p>
 <p>The Property/Value tab lets you find specific values for a given property and then edit that value for individual selectors that use that property/value combination. First, find the property you wish to override by typing in the <strong>Property</strong> autoselect box. Select by clicking with the mouse or by pressing the "Enter" or "Tab" keys.</p>
 <p>This will load all of the unique values that exist for that property in the parent stylesheet with a Sample preview for that value. If there are values that exist in the child stylesheet that do not exist in the parent stylesheet, they will be displayed as well.</p>
-<p>For each unique value, click the "Selectors" link to view a list of selectors that use that property/value combination, grouped by query with a Sample preview of the value and inputs for the child value. Any existing child values will be automatically populated.</p>
+<p>For each unique value, click the "Selectors" link to view a list of selectors that use that property/value combination, grouped by query with a Sample preview of the value and inputs for the new value. Any existing new values will be automatically populated.</p>
 <p>Click "Save" to update the child stylesheet and save your changes to the WordPress admin.</p>
 <!-- END tab --> 
 <!-- BEGIN tab -->
@@ -92,7 +85,7 @@ This option imports the parent stylesheet from the child stylesheet. This enable
 <!-- END tab --> 
 <!-- BEGIN tab -->
 <h3 id="ctc_preview">Preview and Activate</h3>
-<p><strong>IMPORTANT: <a target="_blank" href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>/how-to-use/#preview_activate" title="Test your child theme before activating!">Test your child theme before activating!</a></strong> Some themes (particularly commercial themes) do not correctly load parent template files or automatically load child theme stylesheets or php files. <strong>In the worst cases they will break your website when you activate the child theme.</strong></p>
+<p><strong>IMPORTANT: <a target="_blank" href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>/how-to-use/#preview_activate" title="Preview your child theme before activating!">Preview your child theme before activating!</a></strong> Some themes (particularly commercial themes) do not correctly load parent template files or automatically load child theme stylesheets or php files. <strong>In the worst cases they will break your website when you activate the child theme.</strong></p>
 <ol>
   <li>Navigate to Appearance > Themes in the WordPress Admin. You will now see the new Child Theme as one of the installed Themes.</li>
   <li>Click "Live Preview" below the new Child Theme to see it in action.</li>
@@ -177,7 +170,7 @@ The plugin only loads the bulk of the code in the admin when you are using the t
 <h5 id="add_styles">How do I add styles that aren't in the Parent Theme?</h5>
 <p>You can add queries and selectors using the "Raw CSS" textarea on the Query/Selector tab. See Query/Selector, above. </p>
 <h5 id="add_styles">How do I remove a style from the Parent Theme?</h5>
-<p>You shouldn't really "remove" a style from the Parent. You can, however, set the property to "inherit," "none," or zero (depending on the property). This will negate the Parent value. Some experimentation may be necessary.</p>
+<p>You shouldn't really "remove" a style from the Parent. You can, however, set the property to "inherit," "none," or zero (depending on the property). This will negate the Original value. Some experimentation may be necessary.</p>
 <h5 id="remove_styles">How do I remove a style from the Child Theme?</h5>
 <p>Delete the value from the input for the property you wish to remove. The Child Theme Configurator only adds overrides for properties that contain values. </p>
 <h5 id="important_flag">How do I set the !important flag?</h5>
@@ -195,28 +188,33 @@ The plugin only loads the bulk of the code in the admin when you are using the t
 <ul>
   <li id="parent_theme"><strong>Parent Theme</strong> The WordPress Theme you wish to edit. WordPress first loads the Child Theme, then loads the Parent Theme. If a style exists in the Child Theme, it overrides the Parent Theme.</li>
   <li id="child_theme"><strong>Child Theme</strong> New Theme based on Parent Theme. You can create any number of Child Themes from a single Parent Theme.</li>
-  <li id="class"><strong>Class</strong> A term used to organize objects. For example, a &lt;div&gt; might be assigned the "blue-text" class. The stylesheet might then assign "color: blue;" to members of the "blue-text" class. Thus, the &lt;div&gt; would display text as blue in the browser.</li>
-  <li id="selector"><strong>Selector</strong> One or more html elements, classes, ids or other terms used to identify groups of objects.</li>
+  <li id="class"><strong>Class</strong> A term used to organize objects. For example, a &lt;div&gt; might be assigned the "blue-text" class. The stylesheet might then assign "color: blue;" to members of the "blue-text" class. Thus, the &lt;div&gt; would display text as blue in the browser. Class selectors begin with a period (.).</li>
+  <li id="class"><strong>ID</strong> A unique string used to identify a specific element. ID selectors begin with a hash (#).</li>
+  <li id="selector"><strong>Query</strong> @media query instruction (see At-rule, below).</li>
+  <li id="query"><strong>Selector</strong> Combination of html tag names, ids and classes used to identify objects or groups of objects.</li>
   <li id="property"><strong>Property</strong> One of many standardized terms used to tell the browser how to display objects matching a given selector. Examples are <strong>color</strong>, <strong>background-image</strong> and <strong>font-size</strong>.</li>
+  <li id="value"><strong>Value</strong> Data corresponding to a Property.</li>
   <li id="at-rule"><strong>At-rule</strong> CSS browser instruction to extend default functionality. The Child Theme Configurator supports two At-rules:
     <ul>
-      <li id="import"><strong>@import</strong> Instructs the browser to load additional CSS information from an external source.</li>
-      <li id="query"><strong>@media (Media Query)</strong> Identifies blocks of styles that are used only when certain browser characteristics are true. Examples are max-width, screen and print.</li>
+      <li id="at_import"><strong>@import</strong> Instructs the browser to load additional CSS information from an external source.</li>
+      <li id="at_media"><strong>@media (Media Query)</strong> Identifies blocks of styles that are used only when certain browser characteristics are true. Examples are max-width, screen and print.</li>
     </ul>
   </li>
+  <li id="child_theme"><strong>Baseline Style</strong> A style from any existing Parent Theme or Child Theme stylesheet that can be overridden by the Child Theme custom stylesheet. Most of the time these will come from the Parent Theme's stylesheets.</li>
   <li id="override"><strong>Override</strong> When a selector exists in both the Child Theme and the Parent Theme, the Child Theme takes priority over the Parent theme. This is where the Child Theme Configurator stands out: it helps you create <strong>exact overrides</strong> of selectors from the Parent Theme, eliminating hours of trial and error.</li>
+  <li id="child_theme"><strong>Theme Template</strong> A Theme PHP file having no PHP functions or classes. Other PHP files cannot be safely overridden by a child theme.</li>
 </ul>
 <!-- END tab -->
 <!-- BEGIN sidebar -->
 <h4>Our plugins will not nag you for donations...</h4>
 <span style="font-size:smaller">...but we LOVE referrals.</span><br/><a href="http://wordpress.org/support/view/plugin-reviews/child-theme-configurator?rate=5#postform">Give Us 5 Stars</a>
 <h4>Introducing CTC Pro</h4>
-<a href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>/child-theme-configurator-pro/" title="<?php _e( 'Learn more about CTC Pro', 'child-theme-configurator' ); ?>"><img src="<?php echo CHLD_THM_CFG_URL . 'css/pro-banner.jpg'; ?>" width="150" height="48" /></a>
+<a href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>/child-theme-configurator-pro/" title="Learn more about CTC Pro"><img src="<?php echo CHLD_THM_CFG_URL . 'css/pro-banner.jpg'; ?>" width="150" height="48" /></a>
 <p style="font-size:smaller">Designed by WordPress developers who use it every day, CTC Pro adds plugin stylesheets and other features to make design work quicker and easier. This is a free upgrade for users that purchased the Plugins Extension. <a href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>/child-theme-configurator-pro/" title="Child Theme Configurator Pro">Learn more</a></p>
 <h4 id="ctc_help_sidebar">Links</h4>
 <ul>
-  <li><a href="http://www.lilaeamedia.com/about/contact/">Contact us</a></li>
-  <li><a href="http://www.childthemeconfigurator.com/">Plugin Website</a></li>
+  <li><a href="<?php echo LILAEAMEDIA_URL; ?>/contact/">Contact us</a></li>
+  <li><a href="<?php echo CHLD_THM_CFG_DOCS_URL; ?>">Plugin Website</a></li>
   <li><a href="http://codex.wordpress.org/Child_Themes">WordPress Codex</a></li>
   <li><a href="http://wordpress.stackexchange.com/">WordPress Development (StackExchange)</a></li>
 </ul>

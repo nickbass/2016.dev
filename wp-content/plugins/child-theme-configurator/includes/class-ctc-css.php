@@ -6,15 +6,16 @@ if ( !defined( 'ABSPATH' ) ) exit;
     Class: ChildThemeConfiguratorCSS
     Plugin URI: http://www.childthemeconfigurator.com/
     Description: Handles all CSS input, output, parsing, normalization and storage
-    Version: 1.7.9.1
+    Version: 2.0.2
     Author: Lilaea Media
     Author URI: http://www.lilaeamedia.com/
     Text Domain: chld_thm_cfg
     Domain Path: /lang
     License: GPLv2
-    Copyright (C) 2014-2015 Lilaea Media
+    Copyright (C) 2014-2016 Lilaea Media
 */
 class ChildThemeConfiguratorCSS {
+    
     // data dictionaries
     var $dict_query;        // @media queries and 'base'
     var $dict_sel;          // selectors  
@@ -31,17 +32,26 @@ class ChildThemeConfiguratorCSS {
     var $selkey;            // counter for dict_sel
     var $rulekey;           // counter for dict_rule
     var $valkey;            // counter for dict_val
-    // miscellaneous properties
-    var $imports;           // @import rules
-    var $styles;            // temporary update cache
+
+    // from parent/child form
     var $child;             // child theme slug
     var $parnt;             // parent theme slug
     var $configtype;        // legacy plugin slug
-    var $addl_css;          // parent additional stylesheets
-    var $recent;            // history of edited styles
-    var $enqueue;           // load parent css method (enqueue, import, none)
-    var $converted;         // @imports coverted to <link>?
-    var $nowarn;            // ignore stylesheet handling warnings
+    var $handling;          // child stylesheet handling option
+    var $enqueue;           // whether or not to load parent theme
+    var $ignoreparnt;       // no not parse or enqueue parent
+    var $qpriority;
+    var $hasstyles;
+    var $parntloaded;
+    var $childloaded;
+    var $parnt_deps;          // 
+    var $child_deps;          //
+    var $addl_css;
+    var $cssunreg;
+    var $csswphead;
+    var $cssnotheme;
+
+    // header settings
     var $child_name;        // child theme name
     var $child_author;      // child theme author
     var $child_authoruri;   // child theme author website
@@ -49,7 +59,15 @@ class ChildThemeConfiguratorCSS {
     var $child_descr;       // child theme description
     var $child_tags;        // child theme tags
     var $child_version;     // stylesheet version
+    
+    // miscellaneous properties
+    var $fsize;             // used to check if styles changed since last update
+    var $converted;         // @imports coverted to <link>?
+    var $templates;         // cache of parent template files
+    var $imports;           // @import rules
+    var $recent;            // history of edited styles
     var $max_sel;
+    var $styles;            // temporary update cache
     var $temparray;
     var $vendorrule       = array(
         'box\-sizing',
@@ -69,12 +87,19 @@ class ChildThemeConfiguratorCSS {
     );
     var $configvars = array(
         'addl_css',
-        // the enqueue flag prevents the transition from 1.5.4 
-        // from breaking the stylesheet by forcing the user to regenerate
-        // the config data before updating the stylesheet. Otherwise,
-        // removing the @import for the parent stylesheet will cause
-        // the parent core styles to be missing.
-        'enqueue', 
+        'cssunreg',
+        'csswphead',
+        'cssnotheme',
+        'parnt_deps',
+        'child_deps',
+        'hasstyles',
+        'parntloaded',
+        'childloaded',
+        'ignoreparnt',
+        'qpriority',
+        'enqueue',
+        'handling',
+        'templates',
         'max_sel',
         'imports',
         'child_version',
@@ -94,7 +119,7 @@ class ChildThemeConfiguratorCSS {
         'querykey',
         'recent',
         'converted',
-        'nowarn',
+        'fsize',
     );
     var $dicts = array(
         'dict_qs',
@@ -114,9 +139,8 @@ class ChildThemeConfiguratorCSS {
         $this->qskey            = 0;
         $this->rulekey          = 0;
         $this->valkey           = 0;
-        $this->child            = '';
-        $this->parnt            = '';
-        $this->configtype       = 'theme'; // legacy support
+        $this->max_sel          = 0;
+
         $this->child_name       = '';
         $this->child_author     = 'Child Theme Configurator';
         $this->child_themeuri   = '';
@@ -124,9 +148,21 @@ class ChildThemeConfiguratorCSS {
         $this->child_descr      = '';
         $this->child_tags       = '';
         $this->child_version    = '1.0';
-        $this->max_sel          = 0;
+        
+        $this->configtype       = 'theme'; // legacy support
+        $this->child            = '';
+        $this->parnt            = '';
+        $this->ignoreparnt      = 0;
+        $this->qpriority        = 10;
+        
+        // do not set enqueue, not being set is used to flag old versions
 
         // multi-dim arrays
+        $this->templates        = array();
+        $this->imports          = array( 'child' => array(), 'parnt' => array() );
+
+        $this->recent           = array();
+
         $this->dict_qs          = array();
         $this->dict_sel         = array();
         $this->dict_query       = array();
@@ -135,9 +171,6 @@ class ChildThemeConfiguratorCSS {
         $this->dict_seq         = array();
         $this->sel_ndx          = array();
         $this->val_ndx          = array();
-        $this->addl_css         = array();
-        $this->recent           = array();
-        $this->imports          = array( 'child' => array(), 'parnt' => array() );
     }
     
     // helper function to globalize ctc object
@@ -154,10 +187,12 @@ class ChildThemeConfiguratorCSS {
                 if ( isset( $configarray[ $configkey ] ) )
                     $this->{$configkey} = $configarray[ $configkey ];
             endforeach;
-            $this->ctc()->debug( 'configvars: ' . print_r( $configarray, TRUE ), __FUNCTION__ );
+            //$this->ctc()->debug( 'load_config vars: ' . print_r( $configarray, TRUE ), __FUNCTION__ );
             foreach ( $this->dicts as $configkey ):
-                if ( ( $configarray = get_site_option( $option . '_' . $configkey ) ) && count( $configarray ) )
-                    $this->{$configkey} = $configarray;
+                if ( ( $configarray = get_site_option( $option . '_' . $configkey ) ) ):
+                    if ( count( $configarray ) )
+                        $this->{$configkey} = $configarray;
+                endif;
             endforeach;
         else:
             return FALSE;
@@ -166,6 +201,8 @@ class ChildThemeConfiguratorCSS {
     
     // writes ctc config data to options api
     function save_config( $override = NULL ) {
+        // set latest stylesheet size
+        $this->get_stylesheet_path();
         global $wpdb;
         if ( isset( $override ) ) $option = $override;
         else $option = apply_filters( 'chld_thm_cfg_option', '' );
@@ -173,8 +210,8 @@ class ChildThemeConfiguratorCSS {
         //echo 'saving option: ' . $option . LF;
         $configarray = array();
         foreach ( $this->configvars as $configkey )
-            $configarray[ $configkey ] = $this->{$configkey};
-        $this->ctc()->debug( 'configvars: ' . print_r( $configarray, TRUE ), __FUNCTION__ );
+            $configarray[ $configkey ] = empty( $this->{$configkey} ) ? NULL : $this->{ $configkey };
+        //$this->ctc()->debug( 'save_config vars: ' . print_r( $configarray, TRUE ), __FUNCTION__ );
         if ( is_multisite() ):
             update_site_option( $option . '_configvars', $configarray ); 
         else:
@@ -182,6 +219,7 @@ class ChildThemeConfiguratorCSS {
             update_option( $option . '_configvars', $configarray, FALSE ); 
         endif;
         foreach ( $this->dicts as $configkey ):
+                
             if ( is_multisite() ):
                 update_site_option( $option . '_' . $configkey, $this->{$configkey} ); 
             else:
@@ -190,15 +228,31 @@ class ChildThemeConfiguratorCSS {
             endif;
         endforeach;
     }
-    
+        
+    /**
+     * determine effective stylesheet path and measure size
+     */
+    function get_stylesheet_path() {
+        $stylesheet = apply_filters( 'chld_thm_cfg_target', $this->get_child_target( $this->ctc()->get_child_stylesheet() ), $this );
+        $this->fsize = filesize( $stylesheet );
+        $this->ctc()->debug( 'updated file size: ' . $this->fsize, __FUNCTION__ );
+        return $stylesheet;
+    }
     /**
      * get_prop
      * Getter interface (data sliced different ways depending on objname )
      */
-    function get_prop( $objname, $params = NULL ) {
-        switch ( $objname ):
+    function get_prop( $property, $params = NULL ) {
+        switch ( $property ):
+            case 'fsize':
+                return empty( $this->fsize ) ? FALSE : $this->fsize;
+            case 'converted':
+                return !empty( $this->converted );
+            case 'max_sel':
+                return empty( $this->max_sel ) ? FALSE : $this->max_sel;
             case 'imports':
-                return $this->obj_to_utf8( is_array( $this->imports[ 'child' ] ) ? 
+                
+                return $this->obj_to_utf8( !empty( $this->imports[ 'child' ] ) && is_array( $this->imports[ 'child' ] ) ? 
                     ( current( $this->imports[ 'child' ] ) == 1 ? 
                         array_keys( $this->imports[ 'child' ] ) : 
                             array_keys( array_flip( $this->imports[ 'child' ] ) ) ) : 
@@ -220,33 +274,59 @@ class ChildThemeConfiguratorCSS {
                     array() : $this->obj_to_utf8( $this->denorm_sel_val( $params[ 'key' ] ) );
             case 'rules':
                 ksort( $this->dict_rule );
-                return $this->obj_to_utf8( $this->dict_rule );;
+                return $this->obj_to_utf8( $this->dict_rule );
             case 'child':
                 return $this->child;
             case 'parnt':
                 return $this->parnt;
             case 'configtype': // legacy plugin extension support
                 return $this->configtype;
+            case 'enqueue':
+                return empty( $this->enqueue ) ? FALSE : $this->enqueue;
             case 'addl_css':
-                return isset( $this->addl_css ) ? $this->addl_css : array();
+                return empty( $this->addl_css ) ? array() : $this->addl_css;
+            case 'parnt_deps':
+                return $this->quotify_prop( 'parnt_deps' );
+            case 'child_deps':
+                return $this->quotify_prop( 'child_deps' );
+            case 'templates':
+                return empty( $this->templates )  ? FALSE : $this->templates;
+            case 'ignoreparnt':
+                return empty( $this->ignoreparnt ) ? 0 : 1;
+            case 'qpriority':
+                return empty( $this->qpriority ) ? 10 : $this->qpriority;
+            case 'parntloaded':
+                return empty( $this->parntloaded ) ? FALSE : $this->parntloaded;
+            case 'childloaded':
+                return empty( $this->childloaded ) ? FALSE : $this->childloaded;
+            case 'hasstyles':
+                return empty( $this->hasstyles ) ? 0 : 1;
+            case 'cssunreg':
+                return empty( $this->cssunreg ) ? 0 : 1;
+            case 'csswphead':
+                return empty( $this->csswphead ) ? 0 : 1;
+            case 'cssnotheme':
+                return empty( $this->cssnotheme ) ? 0 : 1;
+            case 'handling':
+                return empty( $this->handling ) ? 'primary' : $this->handling;
             case 'child_name':
-                return $this->child_name;
+                return stripslashes( $this->child_name );
             case 'author':
-                return $this->child_author;
+                return stripslashes( $this->child_author );
             case 'themeuri':
                 return isset( $this->child_themeuri ) ? $this->child_themeuri : FALSE;
             case 'authoruri':
                 return isset( $this->child_authoruri ) ? $this->child_authoruri : FALSE;
             case 'descr':
-                return isset( $this->child_descr ) ? $this->child_descr : FALSE;
+                return isset( $this->child_descr ) ? stripslashes( $this->child_descr ) : FALSE;
             case 'tags':
-                return isset( $this->child_tags ) ? $this->child_tags : FALSE;
+                return isset( $this->child_tags ) ? stripslashes( $this->child_tags ) : FALSE;
             case 'version':
                 return $this->child_version;
             case 'preview':
                 $this->styles = '';
                 if ( empty( $params[ 'key' ] ) || 'child' == $params[ 'key' ] ):
-                    $this->read_stylesheet( 'child' );
+                    $this->read_stylesheet( 'child', $this->ctc()->get_child_stylesheet() );
                 else:
                     if ( isset( $this->addl_css ) ):
                         foreach ( $this->addl_css as $file ):
@@ -255,18 +335,22 @@ class ChildThemeConfiguratorCSS {
                             $this->styles .= '/*** END ' . $file . ' ***/' . LF;
                         endforeach;
                     endif;
-                    list ( $template, $file ) = apply_filters( 'chld_thm_cfg_parent_preview_args', array( 'parnt', 'style.css' ) );
-                    if ( $this->ctc()->is_theme() || $this->ctc()->is_legacy() ):
-                        $this->styles .= '/*** BEGIN ' . $file . ' ***/' . LF;
-                        $this->read_stylesheet( $template, $file );
-                        $this->styles .= '/*** END ' . $file . ' ***/' . LF;
+                    if ( $this->get_prop( 'hasstyles' ) && !$this->get_prop( 'ignoreparnt' ) ):
+                        $this->styles .= '/*** BEGIN Parent style.css ***/' . LF;
+                        $this->read_stylesheet( 'parnt', 'style.css' );
+                        $this->styles .= '/*** END Parent style.css ***/' . LF;
+                    endif;
+                    if ( 'separate' == $this->get_prop( 'handling' ) ):
+                        $this->styles .= '/*** BEGIN Child style.css ***/' . LF;
+                        $this->read_stylesheet( 'child', 'style.css' );
+                        $this->styles .= '/*** END Child style.css ***/' . LF;
                     endif;
                 endif;
                 $this->normalize_css();
                 return $this->styles;
                 break;
             default:
-                return $this->obj_to_utf8( apply_filters( 'chld_thm_get_prop', NULL, $objname, $params ) );
+                return $this->obj_to_utf8( apply_filters( 'chld_thm_get_prop', NULL, $property, $params ) );
         endswitch;
         return FALSE;
     }
@@ -275,9 +359,9 @@ class ChildThemeConfiguratorCSS {
      * set_prop
      * Setter interface (scalar values only)
      */
-    function set_prop( $prop, $value ) {
-        if ( is_null( $this->{ $prop } ) || is_scalar( $this->{ $prop } ) )
-            $this->{ $prop } = $value;
+    function set_prop( $property, $value ) {
+        if ( is_null( $this->{ $property } ) || is_scalar( $this->{ $property } ) )
+            $this->{ $property } = $value;
         else return FALSE;
     }
     
@@ -291,31 +375,64 @@ class ChildThemeConfiguratorCSS {
         endif;
     }
     
+    function quotify_prop( $prop ) {
+        $arr = array();
+        if (!empty( $this->{$prop} ) && is_array( $this->{$prop} ) )
+            foreach ( $this->{$prop}  as $el )
+                $arr[] = "'" . str_replace("'", "\'", $el ) . "'";
+        return $arr;
+    }
     // creates header comments for stylesheet
     function get_css_header() {
-        $parnt = $this->get_prop( 'parnt' );
-        return '/*' . LF
-            . 'Theme Name: ' . $this->get_prop( 'child_name' ) . LF
-            . ( ( $attr = $this->get_prop( 'themeuri' ) ) ? 'Theme URI: ' . $attr . LF : '' )
-            . 'Template: ' . $parnt . LF
-            . 'Author: ' . $this->get_prop( 'author' ) . LF
-            . ( ( $attr = $this->get_prop( 'authoruri' ) ) ? 'Author URI: ' . $attr . LF : '' )
-            . ( ( $attr = $this->get_prop( 'descr' ) ) ? 'Description: ' . $attr . LF : '' )
-            . ( ( $attr = $this->get_prop( 'tags' ) ) ? 'Tags: ' . $attr . LF : '' )
-            . 'Version: ' . $this->get_prop( 'version' ) . '.' . time() . LF
-            . 'Updated: ' . current_time( 'mysql' ) . LF
-            . '*/' . LF . LF . '@charset "UTF-8";' . LF . LF
-            . ( 'import' == $this->enqueue ? '@import url(\'../' . $parnt . '/style.css\');' . LF : '' );
+        return array(
+            'Theme Name'    => $this->get_prop( 'child_name' ),
+            'Theme URI'     => ( ( $attr = $this->get_prop( 'themeuri' ) ) ? $attr : '' ),
+            'Template'      => $this->get_prop( 'parnt' ),
+            'Author'        => $this->get_prop( 'author' ),
+            'Author URI'    => ( ( $attr = $this->get_prop( 'authoruri' ) ) ? $attr : '' ),
+            'Description'   => ( ( $attr = $this->get_prop( 'descr' ) ) ? $attr : '' ),
+            'Tags'          => ( ( $attr = $this->get_prop( 'tags' ) ) ? $attr : '' ),
+            'Version'       => $this->get_prop( 'version' ) . '.' . time(),
+            'Updated'       => current_time( 'mysql' ),
+        );
+    }
+    function get_css_header_comment( $handling = 'primary' ) {
+        if ( 'separate' == $handling ):
+            $contents = "/*" . LF
+                . 'CTC Separate Stylesheet' . LF
+                . 'Updated: ' . current_time( 'mysql' ) . LF
+                . '*/' . LF;
+        else:
+            $contents = "/*" . LF;
+            foreach ( $this->get_css_header() as $param => $value ):
+                if ( $value ):
+                    $contents .= $param . ': ' . $value . LF;
+                endif;
+            endforeach;
+            $contents .= LF . "*/" . LF . $this->get_css_imports();
+                    
+        endif;
+        return $contents;
+    }
+    
+    function get_css_imports() {
+        $newheader = '';
+        if ( 'import' == $this->get_prop( 'enqueue' ) ):
+            $this->ctc()->debug( 'using import ', __FUNCTION__ );
+            if ( ! $this->get_prop( 'ignoreparnt' ) )
+                $newheader .= "@import url('../" . $this->get_prop( 'parnt' ) . "/style.css');" . LF;
+        endif;
+        return $newheader;
     }
     
     // formats file path for child theme file
-    function get_child_target( $file = 'style.css' ) {
-        return trailingslashit( get_theme_root() ) . trailingslashit( $this->get_prop( 'child' ) ) . $file;
+    function get_child_target( $file = '', $theme = NULL ) {
+        return trailingslashit( get_theme_root() ) . trailingslashit( $theme ? $theme : $this->get_prop( 'child' ) ) . $file;
     }
     
     // formats file path for parent theme file
-    function get_parent_source( $file = 'style.css' ) {
-        return trailingslashit( get_theme_root() ) . trailingslashit( $this->get_prop( 'parnt' ) ) . $file;
+    function get_parent_source( $file = 'style.css', $theme = NULL ) {
+        return trailingslashit( get_theme_root() ) . trailingslashit( $theme ? $theme : $this->get_prop( 'parnt' ) ) . $file;
     }
     
     /**
@@ -342,12 +459,15 @@ class ChildThemeConfiguratorCSS {
         $q = $this->get_dict_id( 'query', $query );
         $s = $this->get_dict_id( 'sel', $sel );
         if ( !isset( $this->sel_ndx[ $q ][ $s ] ) ):
-            // stop parsing if limit is reached to prevent out of memory on serialize
+            /**
+             * Future use: stop parsing if limit is reached to prevent out of memory on serialize
+             *
             if ( $this->qskey >= $this->ctc()->sel_limit ):
                 $this->max_sel = 1;
                 $this->ctc()->debug( 'Maximum num selectors reached ( limit: ' . $this->ctc()->sel_limit . ' )', __FUNCTION__ );
                 return FALSE;
             endif;
+            */
             // increment key number
             $this->sel_ndx[ $q ][ $s ] = ++$this->qskey;
             $this->dict_qs[ $this->qskey ][ 's' ] = $s;
@@ -386,7 +506,7 @@ class ChildThemeConfiguratorCSS {
         $rulevalid  = NULL, 
         $reset      = FALSE 
         ) {
-        if ( $this->max_sel ) return;
+        // if ( $this->max_sel ) return; // Future use
         if ( FALSE === strpos( $query, '@' ) ):
             $query = 'base';
         endif;
@@ -441,7 +561,7 @@ class ChildThemeConfiguratorCSS {
         endif;
     }
     
-    /* 
+    /**
      * rule_value_exists
      * Determine if a value already exists for a property
      * and return its id
@@ -455,7 +575,7 @@ class ChildThemeConfiguratorCSS {
         return FALSE;
     }
     
-    /* 
+    /**
      * get_rule_value_id
      * Generate a new rulevalid by iterating existing ids
      * and returning the next in sequence
@@ -467,7 +587,7 @@ class ChildThemeConfiguratorCSS {
         return $newid;
     }
     
-    /* 
+    /**
      * update_rule_value
      * Generate a new value subarray
      */
@@ -479,7 +599,7 @@ class ChildThemeConfiguratorCSS {
         );
     }
 
-    /* 
+    /** 
      * unset_rule_value
      * Delete (splice) old value subarray from values 
      */
@@ -495,7 +615,7 @@ class ChildThemeConfiguratorCSS {
         endforeach;
     }
     
-    /* 
+    /** 
      * prune_if_empty
      * Automatically cleans up hierarchies when no values exist 
      * in either parent or child for a given selector.
@@ -575,6 +695,18 @@ class ChildThemeConfiguratorCSS {
             $this->imports[ 'child' ] = array();
             $this->styles = $this->parse_css_input( $_POST[ 'ctc_child_imports' ] );
             $this->parse_css( 'child' );
+            
+        elseif ( isset( $_POST[ 'ctc_analysis' ] ) ):
+            
+            if ( $this->ctc()->cache_updates ):
+                $this->ctc()->updates[] = array(
+                    'obj'  => 'analysis',
+                    'data' => array(),
+                );
+            endif;
+            
+            $this->ctc()->evaluate_signals( $this->get_prop( 'ignoreparnt' ) );
+            
         elseif ( isset( $_POST[ 'ctc_configtype' ] ) ):
             ob_start();
             do_action( 'chld_thm_cfg_get_stylesheets' );
@@ -634,7 +766,7 @@ class ChildThemeConfiguratorCSS {
                                 $important,
                                 $rulevalid
                             );
-                            // clear the original selector's child value:
+                            // clear the original selector's new value:
                             $this->update_arrays(
                                 'child',
                                 $selarr[ 'query' ],
@@ -714,7 +846,7 @@ class ChildThemeConfiguratorCSS {
                                 $rule_part[ 'important' ],
                                 $rulevalid
                             );  
-                            // clear the original selector's child value:
+                            // clear the original selector's new value:
                             $this->update_arrays( 
                                 'child',
                                 $rule_arr[ 'query' ],
@@ -759,7 +891,7 @@ class ChildThemeConfiguratorCSS {
         endif;
 
         // update enqueue function if imports have not been converted or new imports passed
-        if ( isset( $_POST[ 'ctc_child_imports' ] ) || empty( $this->converted ) )
+        if ( isset( $_POST[ 'ctc_analysis' ] ) || isset( $_POST[ 'ctc_child_imports' ] ) || !$this->get_prop( 'converted' ) )
             add_action( 'chld_thm_cfg_addl_files',   array( $this->ctc(), 'enqueue_parent_css' ), 15, 2 );
     }
     
@@ -792,11 +924,15 @@ class ChildThemeConfiguratorCSS {
      */
     function parse_css_file( $template, $file = 'style.css', $cfgtemplate = FALSE ) {
         if ( '' == $file ) $file = 'style.css';
-        // have we run out of memory?
+        
+        /**
+         * Future use: have we run out of memory?
+         *
         if ( $this->max_sel ):
-            $this->ctc()->debug( 'Insufficient memory to parse file.', __FUNCTION__ );
+            //$this->ctc()->debug( 'Insufficient memory to parse file.', __FUNCTION__ );
             return FALSE;
         endif;
+        */
         // turn off caching when parsing files to reduce memory usage
         $this->ctc()->cache_updates = FALSE;
         $this->styles = ''; // reset styles
@@ -831,12 +967,15 @@ class ChildThemeConfiguratorCSS {
         // read stylesheet
         
         if ( $stylesheet_verified = $this->is_file_ok( $stylesheet, 'read' ) ):
-            // make sure we have space to parse
+            /**
+             * Future use: make sure we have space to parse
+             *
             if ( filesize( $stylesheet_verified ) * 3 > $this->ctc()->get_free_memory() ):
                 $this->max_sel = 1;
-                $this->ctc()->debug( 'Insufficient memory to read file', __FUNCTION__ );
+                //$this->ctc()->debug( 'Insufficient memory to read file', __FUNCTION__ );
                 return;
             endif;
+            */
             $this->styles .= @file_get_contents( $stylesheet_verified ) . "\n";
             //echo 'count after get contents: ' . strlen( $this->styles ) . LF;
         else:
@@ -987,6 +1126,7 @@ class ChildThemeConfiguratorCSS {
 
     // converts relative path to absolute path for preview
     function convert_rel_url( $value, $relpath, $url = TRUE  ) {
+        if ( preg_match( '/data:/', $value ) ) return $value;
         $path       = preg_replace( '%url\([\'" ]*(.+?)[\'" ]*\)%', "$1", $value );
         if ( preg_match( '%(https?:)?//%', $path ) ) return $value;
         $pathparts  = explode( '/', $path );
@@ -1012,14 +1152,12 @@ class ChildThemeConfiguratorCSS {
      * New selectors are appended to the end of each media query block.
      * FIXME - this function has grown too monolithic - refactor and componentize
      */
-    function write_css( $backup = FALSE ) {
-        // write new stylesheet
-        $output = apply_filters( 'chld_thm_cfg_css_header', $this->get_css_header(), $this );
+    function write_css() {
         // turn the dictionaries into indexes (value => id into id => value):
         $rulearr = array_flip( $this->dict_rule );
         $valarr  = array_flip( $this->dict_val );
         $selarr  = array_flip( $this->dict_sel );
-        
+        $output  = '';
         foreach ( $this->sort_queries() as $query => $sort_order ):
             $has_selector = 0;
             $sel_output   = '';
@@ -1075,30 +1213,23 @@ class ChildThemeConfiguratorCSS {
             if ( 'base' != $query ) $sel_output .= '}' . LF;
             if ( $has_selector ) $output .= $sel_output;
         endforeach;
-        $stylesheet = apply_filters( 'chld_thm_cfg_target', $this->get_child_target(), $this );
-        //echo 'writing stylesheet: ' . $stylesheet . LF;
+        $output = $this->get_css_header_comment( $this->get_prop( 'handling' ) ) . LF . $output;
+        $stylesheet = $this->get_stylesheet_path();
+        $this->ctc()->debug( 'writing stylesheet: ' . $stylesheet, __FUNCTION__ );
         //echo //print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true) . LF;
         if ( $stylesheet_verified = $this->is_file_ok( $stylesheet, 'write' ) ):
             global $wp_filesystem; // this was initialized earlier;
-            // backup current stylesheet
-            if ( $backup && is_file( $stylesheet_verified ) ):
-                $timestamp  = date( 'YmdHis', current_time( 'timestamp' ) );
-                $bakfile    = preg_replace( "/\.css$/", '', $stylesheet_verified ) . '-' . $timestamp . '.css';
-                // don't write new stylesheet if backup fails
-                if ( !$wp_filesystem->copy( 
-                    $this->ctc()->fspath( $stylesheet_verified ), 
-                    $this->ctc()->fspath( $bakfile ) ) ) return FALSE;
-            endif;
+            $mode = 'direct' == $this->ctc()->fs_method ? FALSE : 0666;
             // write new stylesheet:
             // try direct write first, then wp_filesystem write
             // stylesheet must already exist and be writable by web server
             if ( $this->ctc()->is_ajax && is_writable( $stylesheet_verified ) ):
                 if ( FALSE === @file_put_contents( $stylesheet_verified, $output ) ): 
-                    $this->debug( 'Ajax write failed.', __FUNCTION__ );
+                    $this->ctc()->debug( 'Ajax write failed.', __FUNCTION__ );
                     return FALSE;
                 endif;
-            elseif ( FALSE === $wp_filesystem->put_contents( $this->ctc()->fspath( $stylesheet_verified ), $output ) ):
-                $this->debug( 'Filesystem write failed.', __FUNCTION__ );
+            elseif ( FALSE === $wp_filesystem->put_contents( $this->ctc()->fspath( $stylesheet_verified ), $output, $mode ) ):
+                $this->ctc()->debug( 'Filesystem write failed.', __FUNCTION__ );
                 return FALSE;
             endif;
             return TRUE;
@@ -1451,7 +1582,7 @@ class ChildThemeConfiguratorCSS {
     /**
      * denorm_rule_val
      * Return array of unique values corresponding to specific rule
-     * FIXME: only return child if no parent value exists
+     * FIXME: only return child if no original value exists
      */    
     function denorm_rule_val( $ruleid ) {
         $rule_sel_arr = array();
@@ -1474,7 +1605,7 @@ class ChildThemeConfiguratorCSS {
      * denorm_val_query
      * Return array of queries, selectors, rules, and values corresponding to
      * specific rule/value combo grouped by query, selector
-     * FIXME: only return child values corresponding to specific rulevalid of matching parent value
+     * FIXME: only return new values corresponding to specific rulevalid of matching original value
      */    
     function denorm_val_query( $valid, $rule ) {
         $value_query_arr = array();
@@ -1688,6 +1819,7 @@ class ChildThemeConfiguratorCSS {
     /**
      * is_file_ok
      * verify file exists and is in valid location
+     * must be in theme or plugin folders
      */
     function is_file_ok( $stylesheet, $permission = 'read' ) {
         // remove any ../ manipulations

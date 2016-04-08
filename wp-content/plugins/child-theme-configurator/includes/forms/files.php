@@ -53,17 +53,12 @@ if ( !defined( 'ABSPATH' ) ) exit;
     </form>
   </div>
   <div class="ctc-input-row clearfix" id="input_row_screenshot">
-    <form id="ctc_export_form" method="post" action="?page=<?php echo CHLD_THM_CFG_MENU; ?>">
-    <?php wp_nonce_field( apply_filters( 'chld_thm_cfg_action', 'ctc_update' ) ); ?>
       <div class="ctc-input-cell"> <strong>
         <?php _e( 'Export Child Theme as Zip Archive', 'child-theme-configurator' ); ?>
         </strong> </div>
-      <div class="ctc-input-cell-wide">
-        <input class="ctc_submit button button-primary" id="ctc_export_child_zip" 
-                name="ctc_export_child_zip"  type="submit" 
-                value="<?php _e( 'Export', 'child-theme-configurator' ); ?>" />
-      </div>
-    </form>
+      <div class="ctc-input-cell-wide"><?php
+        include ( CHLD_THM_CFG_DIR . '/includes/forms/zipform.php' ); 
+      ?></div>
   </div>
   <?php if ( 'direct' != $this->ctc()->fs_method ): ?>
   <div class="ctc-input-row clearfix" id="input_row_permissions">

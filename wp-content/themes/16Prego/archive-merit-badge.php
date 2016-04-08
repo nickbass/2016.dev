@@ -17,35 +17,7 @@ get_header(); ?>
 				?>
 			</header><!-- .page-header -->
 <!-- Creating page listing Custom Post Type           -->
-            <div id="list-merit-badges">
-                <?php
-                    $args = array(
-                    'post_type' => 'merit-badge',
-                    'orderby' => 'title',
-                    'order' => 'ASC',
-                    'showposts' => 100
-                    );
-                $merit = new WP_Query($args); ?>
-                
-                
-                <ul>
-                    <?php while ($merit ->have_posts() ): $merit->the_post(); ?>
-                        <li class='one-badge'>
-                                <header>
-                                    <span <?php post_class(); ?>></span>    
-                                    <p> 
-                                        <a href="<?php the_permalink(); ?>"
-                                        <?php the_title(); ?>
-                                        </a>   
-                                    </p>
-                                </header>
-                        </li>
-                    <?php endwhile; ?>
-                </ul>
-                
-                
-                
-            </div>
+            
             
 			<?php
 			// Start the Loop.
@@ -74,7 +46,36 @@ get_header(); ?>
 
 		endif;
 		?>
-
+<div id="list-merit-badges">
+                <?php
+                    $args = array(
+                    'post_type' => 'merit-badge',
+                    'orderby' => 'title',
+                    'order' => 'ASC',
+                    'showposts' => 100
+                    );
+                $merit = new WP_Query($args); ?>
+                
+                
+                <ul>
+                    <?php while ($merit ->have_posts() ): $merit->the_post(); ?>
+                        <li class='one-badge'>
+                                <header>
+                                    <span <?php post_class(); ?>></span>    
+                                    <p> 
+                                        <a href="<?php the_permalink(); ?>"
+                                        <?php the_title();
+                                           ?>
+                                        </a>   
+                                    </p>
+                                </header>
+                        </li>
+                    <?php endwhile; ?>
+                </ul>
+                
+                
+                
+            </div>
 		</main><!-- .site-main -->
 	</div><!-- .content-area -->
 
