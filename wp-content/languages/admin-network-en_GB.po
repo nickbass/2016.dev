@@ -2,13 +2,17 @@
 # This file is distributed under the same license as the Network Admin package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-11-26 00:00:19+0000\n"
+"PO-Revision-Date: 2016-05-06 10:27-0700\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: GlotPress/1.0-alpha-1100\n"
+"X-Generator: Poedit 1.8.7\n"
 "Project-Id-Version: Network Admin\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_GB\n"
 
 #: wp-admin/network/site-users.php:329 wp-admin/network/user-new.php:106
 msgid "A password reset link will be sent to the user via email."
@@ -33,7 +37,7 @@ msgstr "Sites list"
 
 #: wp-admin/network/sites.php:50
 msgid "Sites list navigation"
-msgstr "Sites list navigation"
+msgstr "Sites bullet nav"
 
 #: wp-admin/network/themes.php:256
 msgid "Themes list navigation"

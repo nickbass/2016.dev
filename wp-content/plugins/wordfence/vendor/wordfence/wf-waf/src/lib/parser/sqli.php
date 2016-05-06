@@ -649,7 +649,7 @@ class wfWAFSQLiParser extends wfWAFBaseParser {
 	protected function expectNextIdentifierEquals($keyword) {
 		$nextToken = $this->expectNextToken();
 		$this->expectTokenTypeEquals($nextToken, wfWAFSQLiLexer::UNQUOTED_IDENTIFIER);
-		if ($nextToken->getLowerCaseValue() !== strtolower($keyword)) {
+		if ($nextToken->getLowerCaseValue() !== wfWAFUtils::strtolower($keyword)) {
 			$this->triggerSyntaxError($nextToken);
 		}
 		return $nextToken;
@@ -2558,20 +2558,8 @@ class wfWAFSQLiParser extends wfWAFBaseParser {
 	 */
 	private function isIdentifierWithValue($token, $value) {
 		return $token && $token->getType() === wfWAFSQLiLexer::UNQUOTED_IDENTIFIER &&
-		(is_array($value) ? in_array($token->getLowerCaseValue(), array_map('strtolower', $value)) :
-			$token->getLowerCaseValue() === strtolower($value));
-	}
-
-	/**
-	 * @param wfWAFLexerToken $token
-	 * @param mixed $type
-	 * @return bool
-	 */
-	private function isTokenOfType($token, $type) {
-		if (is_array($type)) {
-			return $token && in_array($token->getType(), $type);
-		}
-		return $token && $token->getType() === $type;
+		(is_array($value) ? in_array($token->getLowerCaseValue(), array_map('wfWAFUtils::strtolower', $value)) :
+			$token->getLowerCaseValue() === wfWAFUtils::strtolower($value));
 	}
 
 	/**
@@ -2835,12 +2823,12 @@ class wfWAFSQLiLexer implements wfWAFLexerInterface {
 						}
 						if (($match2 = $this->scanner->check($tokenMatcher2->getMatch())) !== null) {
 							$biggestToken2 = $this->createToken($tokenMatcher2->getTokenID(), $match2);
-							if (strlen($biggestToken2->getValue()) > strlen($biggestToken->getValue())) {
+							if (wfWAFUtils::strlen($biggestToken2->getValue()) > wfWAFUtils::strlen($biggestToken->getValue())) {
 								$biggestToken = $biggestToken2;
 							}
 						}
 					}
-					$this->scanner->advancePointer(strlen($biggestToken->getValue()));
+					$this->scanner->advancePointer(wfWAFUtils::strlen($biggestToken->getValue()));
 					return $biggestToken;
 
 				} else if (($match = $this->scanner->scan($tokenMatcher->getMatch())) !== null) {
