@@ -9,27 +9,14 @@
 
 get_header(); ?>
 
-<div id="primary" class="content-area">
+<div id="primary" class="content-area course">
 	<main id="main" class="site-main" role="main">
-		<?php 
-            //displays date earned, creates variable then displays variable 
-            $date_earned = date('d F Y', strtotime(get_post_meta(get_the_ID(),'wpcf-earned-date', true)));
-            echo 'Date Earned: ' . $date_earned . '<br>' ;  
-            ?>
-        <?php
-            $badge_patch = get_post_meta()
-        ?>
-        <?php
-            //displays location earned
-            $badge_earned = get_post_meta( get_the_ID(), 'Earned', true);
-            echo $badge_earned ;
-        ?>
-    	<?php
+		<?php
 		// Start the loop.
 		while ( have_posts() ) : the_post();
-            
+
 			// Include the single post content template.
-			get_template_part( 'template-parts/content', 'merit-badge' );
+			get_template_part( 'template-parts/content', 'single' );
 
 			// If comments are open or we have at least one comment, load up the comment template.
 			if ( comments_open() || get_comments_number() ) {

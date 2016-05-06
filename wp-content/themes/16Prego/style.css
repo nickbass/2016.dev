@@ -10,3 +10,25 @@ Updated: 2016-03-04 20:40:38
 /* Custom Styles*/
 .one-badge{list-style: none;
 }
+
+#asof {text-align: center; 
+        font-style: italic;
+        color: white;}
+
+
+#coverletter {  width: 50%;
+                text-align: center;
+                float: left;}
+
+
+#resume {  width: 50%;
+            text-align: center;
+            float: right;}
+
+aside {}
+
+.course { opacity: 75%;}
+
+.merit-badge { background: forestgreen;}
+
+.notitle{ display: none;}
